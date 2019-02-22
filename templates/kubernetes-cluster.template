@@ -137,6 +137,8 @@ Parameters:
     Type: String
     Default: m4.large
     AllowedValues:
+    - t3.small
+    - t3.medium
     - m5.large
     - m5.xlarge
     - m5.2xlarge
@@ -449,7 +451,8 @@ Resources:
       # Adds our SSH key to the instance
       KeyName: !Ref KeyName
       NetworkInterfaces:
-      - DeleteOnTermination: true
+      - AssociatePublicIpAddress: true
+        DeleteOnTermination: true
         DeviceIndex: 0
         SubnetId: !Ref ClusterSubnetId
         # Joins the ClusterSecGroup Security Group for cluster communication and SSH access
@@ -701,6 +704,7 @@ Resources:
             "04-k8s-setup-node":
               command: "/tmp/setup-k8s-node.sh"
     Properties:
+      AssociatePublicIpAddress: true
       # Refers to the NodeInstanceProfile resource, which applies the IAM role for the nodes
       # The IAM role allows us to create further AWS resources (like an EBS drive) from the cluster
       # This is needed for the Kubernetes-AWS cloud-provider integration
@@ -939,7 +943,7 @@ Resources:
       - !Ref MasterRole
 
   # Create a placeholder load balancer for the API server. Backend instances will be added by the master itself on the
-  # first boot in the startup script above. The load balancer listens on both port 443 and 6443. 
+  # first boot in the startup script above. The load balancer listens on both port 443 and 6443.
   # The port 6443 is the api port specified in kubeadm init and it's used by clients to connet to the master.
   ApiLoadBalancer:
     Type: AWS::ElasticLoadBalancing::LoadBalancer

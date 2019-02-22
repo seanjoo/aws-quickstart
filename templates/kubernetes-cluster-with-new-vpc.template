@@ -504,7 +504,7 @@ Resources:
         DeviceIndex: 0
         SubnetId: !Ref PublicSubnet
         # This address is chosen because our public subnet begins at 10.0.128.0/20
-        PrivateIpAddress: '10.0.128.5'
+        PrivateIpAddress: '10.1.128.5'
         GroupSet:
         - Ref: BastionSecurityGroup
       Tags:
